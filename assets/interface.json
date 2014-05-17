@@ -1,0 +1,167 @@
+{
+	"UI" : [
+		{
+			"type": "selector",
+			"name": "Category",
+			"id": "category",
+			"tooltip": "Filter events based on category",
+			"restricted": true,
+			"options": [
+				"assassination", 
+				"compilation", 
+				"executions", 
+				"insurrection", 
+				"lynching", 
+				"mass suicide", 
+				"rampage", 
+				"riot", 
+				"sedition", 
+				"terrorism", 
+				"unknown category", 
+				"war"
+			]
+		},
+		{
+			"type": "selector",
+			"name": "Motivation",
+			"tooltip": "Filter events based on motivation",
+			"id": "motivation",
+			"restricted": true,
+			"options": [
+				"criminal",
+				"economic",
+				"education",
+				"ethnic",
+				"extralegal",
+				"family",
+				"indian",
+				"insane",
+				"labor",
+				"land",
+				"nativist",
+				"other",
+				"personal",
+				"political",
+				"prison",
+				"race",
+				"religion",
+				"revenge",
+				"section",
+				"sex",
+				"shopping",
+				"unknown",
+				"work"
+			]
+		},
+		{
+			"type": "tabbed",
+			"name": "Date",
+			"tabs": [
+				{
+					"type": "selector",
+					"name": "Year",
+					"tooltip": "Search for events with specific dates",
+					"id": "year.values",
+					"active": true,
+					"restricted": false,
+					"format": "number"	
+				},
+				{
+					"type": "multiple",
+					"name": "Range",
+					"showname": false,
+					"id": "year.range",
+					"selectors": [
+						{
+							"type": "selector",
+							"name": "Start",
+							"id": "year.range.min",
+							"single": true,
+							"format": "number"
+						},
+						{
+							"type": "selector",
+							"name": "End",
+							"id": "year.range.max",
+							"single": true,
+							"format": "number"
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "tabbed",
+			"name": "Fatalities",
+			"tabs": [
+				{
+					"type": "selector",
+					"name": "Values",
+					"tooltip": "Search for events with specific fatality counts",
+					"active": true,
+					"id": "fatalities.values",
+					"restricted": false,
+					"format": "number"
+				},
+				{
+					"type": "multiple",
+					"name": "Range",
+					"showname": false,
+					"id": "fatalities.range",
+					"selectors": [
+						{
+							"type": "selector",
+							"name": "Minimum",
+							"id": "fatalities.range.min",
+							"single": true,
+							"format": "number"
+						},
+						{
+							"type": "selector",
+							"name": "Maximum",
+							"id": "fatalities.range.max",
+							"single": true,
+							"format": "number"
+						}
+					]
+				}
+			]
+		},
+		{
+			"type": "selector",
+			"name": "Location",
+			"tooltip": "Search for events in a specific location",
+			"id": "locations"
+		},
+		{
+			"type": "multiple",
+			"name": "Area restriction",
+			"tooltip": "Search for events within a specified area",
+			"showname": true,
+			"id": "geo",
+			"selectors": [
+				{
+					"type": "selector",
+					"name": "Latitude",
+					"id": "geo.lat",
+					"single": true,
+					"format": "number"
+				},
+				{
+					"type": "selector",
+					"name": "Longitude",
+					"id": "geo.long",
+					"single": true,
+					"format": "number"
+				},
+				{
+					"type": "selector",
+					"name": "Distance",
+					"id": "geo.distance",
+					"single": true,
+					"format": "number"
+				}
+			]
+		}
+	]
+}

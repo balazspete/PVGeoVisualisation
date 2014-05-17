@@ -1,0 +1,141 @@
+<!DOCTYPE HTML>
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <title>RDF Visualiser</title>
+      <meta charset="UTF-8">
+      <link href="css/bootstrap.min.css" rel="stylesheet">
+      <link href="css/custom.css" rel="stylesheet">
+     
+   </head>
+   <body>
+       <div class="navbar navbar-inverse navbar-static-top" role="navigation">
+         <div class="container-fluid">
+           <div class="navbar-header">
+             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+               <span class="sr-only">Toggle navigation</span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+               <span class="icon-bar"></span>
+             </button>
+             <a class="navbar-brand" href="/">PV GeoVisualisation</a>
+           </div>
+           <div class="navbar-collapse collapse">
+             <!--<ul class="nav navbar-nav navbar-right">
+               <li><a href="#">Dashboard</a></li>
+               <li><a href="#">Settings</a></li>
+               <li><a href="#">Profile</a></li>
+               <li><a href="#">Help</a></li>
+             </ul>
+             <form class="navbar-form navbar-right">
+               <input type="text" class="form-control" placeholder="Search...">
+             </form>-->
+           </div>
+         </div>
+       </div>
+
+      <div class="container-fluid">
+         <div class="row">
+            <div class="col-md-2 sidebar page-column scrollable" id="query-ui">
+                  <span>Loading data and generating interface...</span>
+            </div>
+            <div class="col-md-10 main">
+               <div 
+                  class="page-column"
+                  id="visualisation" 
+                  data-sgvizler-endpoint="http://localhost:3030/ds/query"
+                  data-sgvizler-query=''
+                  data-sgvizler-chart="google.visualization.Map" 
+                  data-sgvizler-loglevel="2"
+                  style="height:100%" 
+                  data-sgvizler-chart-options="showTip=true|useMapTypeControl=true|mapType=terrain|enableScrollWheel=true"></div>
+            </div>
+         </div>
+      </div>
+
+      <script id="query-ui-template" class="template" type="text/x-handlebars-template">
+         <form role="form">
+         {{#each UI}}
+            {{render .}}
+         {{/each}}
+         </form>
+      </script>
+
+      <script id="multiple-template" class="template" type="text/x-handlebars-template">
+         <div>
+         {{#if showname}}<div class="multiple-name"><strong>{{name}}</strong></div>{{/if}}
+         {{#each selectors}}
+            {{render .}}
+         {{/each}}
+         </div>
+      </script>
+
+      <script id="tabbed-template" class="template" type="text/x-handlebars-template">
+         <div>
+            <ul class="nav nav-tabs">
+               <li><a href="javascript:;" class="title">{{name}}</a></li>
+               {{#each tabs}}
+                  <li class="{{#if active}} active{{/if}}"><a href="#{{idfy id}}" data-toggle="tab" class="tab-switch-link">{{name}}</a></li>
+               {{/each}}
+            </ul>
+            <div class="tab-content">
+               {{#each tabs}}
+                  <div class="tab-pane{{#if active}} active{{/if}}" id="{{idfy id}}">{{render .}}</div>
+               {{/each}}
+            </div>
+         </div>
+      </script>
+
+      <script id="selector-template" class="template" type="text/x-handlebars-template">
+         <div class="form-group query-selector{{#unless single}} tag-cloud{{else}} single{{/unless}}" data-query-id="{{id}}">
+            <label for="{{idfy id}}" {{#if tooltip}}data-toggle="tooltip" data-placement="right" title="{{tooltip}}"{{/if}}>{{name}}</label>
+            {{#unless restricted}}
+            <div class="row">
+               <div class="col-xs-7">
+                  <input type="{{#if format}}{{format}}{{else}}text{{/if}}" class="form-control" id="{{idfy id}}" placeholder="{{name}}"{{#if single}} value="{{getQueryValue id}}"{{/if}}>
+               </div>
+               <button type="button" class="btn btn-default">{{#if single}}Set{{else}}Add{{/if}}</button>
+               <button class="btn btn-link clear-link">clear</button>
+            </div>
+            {{else}}
+            <button class="btn btn-link clear-link">clear</button>
+            {{/unless}}
+            {{#unless single}}      
+            <div class="tag-cloud-area" data-query-id="{{id}}">
+               {{#each options}}            
+                  {{tagCloudTag .}}
+               {{/each}}
+            </div>
+            {{/unless}}
+         </div>
+      </script>
+
+      <script id="selector-template-input" class="template" type="text/x-handlebars-template">
+         <input type="{{#if format}}{{format}}{{else}}text{{/if}}" class="form-control" id="{{idfy id}}" placeholder="{{name}}">
+      </script>
+
+      <script id="tag-cloud-tag-template" class="template" type="text/x-handlebars-template">
+         <a href="javascript:;" class="label label-{{#if active}}primary{{else}}default{{/if}} tag-cloud-tag" data-value="{{value}}" title="Click to remove">{{value}}</a>
+      </script>
+
+      <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js"></script>
+      <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+      <script type="text/javascript" src="js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="js/extern.js"></script>
+      <script type="text/javascript" src="js/app.js"></script>
+      <script type="text/javascript">
+         sgvizler.prefix('wd', 'http://sws.ifi.uio.no/d2rq/resource/');
+         sgvizler.prefix('w', 'http://sws.ifi.uio.no/ont/world.owl#');
+
+         sgvizler.prefix('lgd', 'http://linkedgeodata.org/');
+         sgvizler.prefix('lgdo', 'http://linkedgeodata.org/ontology/');
+         sgvizler.prefix('geo', 'http://www.w3.org/2003/01/geo/wgs84_pos#');
+
+         $(document).ready(function() { 
+            setupHandlebars();
+            $(".page-column").css('height', $(window).height()-50);
+            updateInterface();
+         });
+      </script>
+   </body>
+</html>

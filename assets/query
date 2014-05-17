@@ -1,0 +1,65 @@
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX uspv:<http://tcdfame.cs.tcd.ie/data/politicalviolence/uspv/>
+PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>
+PREFIX pv:<http://tcdfame.cs.tcd.ie/data/politicalviolence#>
+PREFIX owltime:<http://www.w3.org/2006/time#>
+
+PREFIX lgd:<http://linkedgeodata.org/>
+PREFIX lgdo:<http://linkedgeodata.org/ontology/>
+PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
+
+SELECT ?lat ?long (CONCAT("<strong>", ?yearText, "</strong><br>", ?description, "<br><br><strong>Category:</strong> ", SUBSTR(?category, 49), "<br><strong>Motivation:</strong> ", SUBSTR(?motivation, 49), "<br><strong>Fatalities:</strong> ", ?fatalities, "<br><strong>Location:</strong> ", ?location, "<br><br><a target='_new' class='rdflink' href='", ?href, "'>More details", "</a>&nbsp;&nbsp;&nbsp;<a href='/?category=", SUBSTR(?category, 49), "|&motivation=", SUBSTR(?motivation, 49), "|'>Find more events like this</a>") AS ?text)
+WHERE {
+	{
+		?url
+			pv:description ?description; 
+			pv:category ?categoryValue;
+			pv:motivation ?motivationValue;
+			pv:fatalities _:fatalities;
+			pv:location _:location;
+			pv:atTime _:time .
+
+		_:location
+			pv:unstructuredLocation ?location;
+			geo:lat ?lat;
+			geo:long ?long .
+		_:fatalities
+			pv:fatalitiesValue ?fatalitiesValue.
+		_:time
+			owltime:hasDateTimeDescription _:dateTimeDescription .
+		_:dateTimeDescription
+			owltime:year ?year
+		
+		BIND (xsd:string(?fatalitiesValue) AS ?fatalities)
+		BIND (xsd:string(?motivationValue) AS ?motivation)
+		BIND (xsd:string(?categoryValue) AS ?category)
+		BIND (xsd:string(?year) AS ?yearText)
+		BIND (xsd:string(?url) AS ?href)
+		BIND (xsd:integer(?year) AS ?yearValue)
+	}
+	
+	{{#if category}}
+		FILTER( false{{#each category}} || CONTAINS(?category, "{{.}}"){{/each}} )
+	{{/if}}
+
+	{{#if motivation}}
+		FILTER( false{{#each motivation}} || CONTAINS(?motivation, "{{.}}"){{/each}} )
+	{{/if}}
+	
+	{{#if year.range.min}}FILTER( {{year.range.min}} <= ?yearValue ){{/if}}
+	{{#if year.range.max}}FILTER( {{year.range.max}} >= ?yearValue ){{/if}}
+	{{#if year.values}}
+	FILTER( false{{#each year.values}} || {{.}} = ?yearValue{{/each}} )
+	{{/if}}
+
+	{{#if fatalities.range.min}}FILTER( {{fatalities.range.min}} <= ?fatalitiesValue ){{/if}}
+	{{#if fatalities.range.max}}FILTER( {{fatalities.range.max}} >= ?fatalitiesValue ){{/if}}
+	{{#if fatalities.values}}
+	FILTER( false{{#each fatalities.values}} || {{.}} = ?fatalitiesValue{{/each}} )
+	{{/if}}
+
+	{{#if locations}}FILTER( false{{#each locations}} || CONTAINS( ?location, "{{.}}" ){{/each}} ){{/if}}
+
+}
+LIMIT {{limit}}

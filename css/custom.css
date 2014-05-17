@@ -1,0 +1,57 @@
+
+body {
+	overflow: hidden;
+}
+
+.navbar {
+	margin-bottom: 0;
+}
+
+.container-fluid {
+	padding-right: 0;
+}
+
+.nav-tabs a.title {
+	font-weight: 700;
+	color: black;
+	border: 0;
+}
+
+.nav-tabs a.title:hover {
+	background-color: transparent;
+}
+
+.form-group {
+	padding: 10px;
+	margin-bottom: 0;
+}
+
+.page-column {
+	overflow: hidden;
+}
+
+.page-column.scrollable {
+	overflow-y: scroll;
+}
+
+#query-ui > form > div {
+	margin-bottom: 10px;
+	border: #DDD solid 1px;
+}
+
+#query-ui > form > div > .multiple-name {
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+#query-ui > form > div > .nav-tabs {
+	padding-top: 1px;
+}
+
+#query-ui > form > div:first-child {
+	margin-top: 10px;
+}
+
+#query-ui .tag-cloud .tag-cloud-area {
+	margin-top: 10px;
+}
