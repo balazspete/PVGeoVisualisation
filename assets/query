@@ -8,8 +8,9 @@ PREFIX owltime:<http://www.w3.org/2006/time#>
 PREFIX lgd:<http://linkedgeodata.org/>
 PREFIX lgdo:<http://linkedgeodata.org/ontology/>
 PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX spatial:<http://jena.apache.org/spatial#>
 
-SELECT ?lat ?long (CONCAT("<strong>", ?yearText, "</strong><br>", ?description, "<br><br><strong>Category:</strong> ", SUBSTR(?category, 49), "<br><strong>Motivation:</strong> ", SUBSTR(?motivation, 49), "<br><strong>Fatalities:</strong> ", ?fatalities, "<br><strong>Location:</strong> ", ?location, "<br><br><a target='_new' class='rdflink' href='", ?href, "'>More details", "</a>&nbsp;&nbsp;&nbsp;<a href='/?category=", SUBSTR(?category, 49), "|&motivation=", SUBSTR(?motivation, 49), "|'>Find more events like this</a>") AS ?text)
+SELECT ?lat ?long (CONCAT("<strong>", ?yearText, "</strong><br>", ?description, "<br><br><strong>Category:</strong> ", SUBSTR(?category, 49), "<br><strong>Motivation:</strong> ", SUBSTR(?motivation, 49), "<br><strong>Fatalities:</strong> ", ?fatalities, "<br><strong>Location:</strong> ", ?location, "<br><br><a target='_new' class='rdflink' href='", ?href, "'>More details", "</a>&nbsp;&nbsp;&nbsp;<a href='/?category=", SUBSTR(?category, 49), "|&motivation=", SUBSTR(?motivation, 49), "|' class='inpage-update'>Find more events like this</a>&nbsp;&nbsp;&nbsp;<a href='/?geo.lat=", ?latitude, "&geo.long=", ?longitude, "&geo.distance='", ?distanceText, " class='inpage-update'>Find other events nearby</a>") AS ?text)
 WHERE {
 	{
 		?url
@@ -36,7 +37,11 @@ WHERE {
 		BIND (xsd:string(?categoryValue) AS ?category)
 		BIND (xsd:string(?year) AS ?yearText)
 		BIND (xsd:string(?url) AS ?href)
+		BIND (xsd:string(?lat) AS ?latitude)
+		BIND (xsd:string(?long) AS ?longitude)
 		BIND (xsd:integer(?year) AS ?yearValue)
+		BIND (100 AS ?distance)
+		BIND (xsd:string(100) AS ?distanceText)
 	}
 	
 	{{#if category}}
@@ -61,5 +66,9 @@ WHERE {
 
 	{{#if locations}}FILTER( false{{#each locations}} || CONTAINS( ?location, "{{.}}" ){{/each}} ){{/if}}
 
+	{{#if geo.lat}}{{#if geo.long}}{{#if geo.distance}}
+	FILTER( {{geo.lat}} - ?distance <= ?lat && ?lat <= {{geo.lat}} + ?distance )
+	FILTER( {{geo.long}} - ?distance <= ?long && ?long <= {{geo.long}} + ?distance )
+	{{/if}}{{/if}}{{/if}}
 }
 LIMIT {{limit}}

@@ -36,10 +36,10 @@
 
       <div class="container-fluid">
          <div class="row">
-            <div class="col-md-2 sidebar page-column scrollable" id="query-ui">
+            <div class="col-md-3 sidebar page-column scrollable" id="query-ui">
                   <span>Loading data and generating interface...</span>
             </div>
-            <div class="col-md-10 main">
+            <div class="col-md-9 main">
                <div 
                   class="page-column"
                   id="visualisation" 
@@ -95,7 +95,7 @@
                   <input type="{{#if format}}{{format}}{{else}}text{{/if}}" class="form-control" id="{{idfy id}}" placeholder="{{name}}"{{#if single}} value="{{getQueryValue id}}"{{/if}}>
                </div>
                <button type="button" class="btn btn-default">{{#if single}}Set{{else}}Add{{/if}}</button>
-               <button class="btn btn-link clear-link">clear</button>
+               <button class="btn btn-link clear-link" style="position:absolute">clear</button>
             </div>
             {{else}}
             <button class="btn btn-link clear-link">clear</button>
@@ -135,6 +135,12 @@
             setupHandlebars();
             $(".page-column").css('height', $(window).height()-50);
             updateInterface();
+            $(document).on('click', '.inpage-update', function(event) {
+              event.preventDefault();
+              History.pushState(null, null, $(this).attr('href'));
+              updateInterface();
+              return true;
+            });
          });
       </script>
    </body>
