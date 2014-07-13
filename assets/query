@@ -10,7 +10,7 @@ PREFIX lgdo:<http://linkedgeodata.org/ontology/>
 PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
 PREFIX spatial:<http://jena.apache.org/spatial#>
 
-SELECT ?lat ?long (CONCAT("<strong>", ?yearText, "</strong><br>", ?description, "<br><br><strong>Category:</strong> ", SUBSTR(?category, 49), "<br><strong>Motivation:</strong> ", SUBSTR(?motivation, 49), "<br><strong>Fatalities:</strong> ", ?fatalities, "<br><strong>Location:</strong> ", ?location, "<br><br><a target='_new' class='rdflink' href='", ?href, "'>More details", "</a>&nbsp;&nbsp;&nbsp;<a href='/?category=", SUBSTR(?category, 49), "|&motivation=", SUBSTR(?motivation, 49), "|' class='inpage-update'>Find more events like this</a>&nbsp;&nbsp;&nbsp;<a href='/?geo.lat=", ?latitude, "&geo.long=", ?longitude, "&geo.distance='", ?distanceText, " class='inpage-update'>Find other events nearby</a>") AS ?text)
+SELECT ?lat ?long (CONCAT("<strong>", ?yearText, "</strong><br>", ?description, "<br><br><strong>Category:</strong> ", SUBSTR(?category, 48), "<br><strong>Motivation:</strong> ", SUBSTR(?motivation, 48), "<br><strong>Fatalities:</strong> ", ?fatalities, "<br><strong>Location:</strong> ", ?location, "<br><br><a target='_new' class='rdflink' href='", ?href, "'>More details", "</a>&nbsp;&nbsp;&nbsp;<a href='/?category=", SUBSTR(?category, 48), "|&motivation=", SUBSTR(?motivation, 48), "|' class='inpage-update'>Find more events like this</a>") AS ?text)
 WHERE {
 	{
 		?url
