@@ -130,8 +130,9 @@
 		{
 			"type": "selector",
 			"name": "Location",
-			"tooltip": "Search for events in a specific location",
+			"tooltip": "Limit the location to one or more states",
 			"id": "locations",
+			"restricted": true,
 			"options": [
 				"AL",
 				"AK",

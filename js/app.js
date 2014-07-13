@@ -328,7 +328,41 @@ function setupClearQueryElement() {
 	});
 }
 
+window.chartIsReady = function(chart)
+{
+	var params = getUrlVars();
+	var loc = params['location-name']
 
+	if (loc !== undefined){
+		console.log(chart);
+
+		var geo = params['location-geo'];
+		if (geo !== undefined) {
+			console.log(chart);
+			var coords = geo.split("|");
+			var latLng = new google.maps.LatLng(coords[0], coords[1]);
+			var map = new google.maps.Map(document.getElementById('visualisation'));
+		    var marker = new google.maps.Marker({
+		      position: latLng,
+		      map: map,
+		      title: loc,
+		      animation: google.maps.Animation.DROP,
+		      icon: 'assets/gmaps-location-pin.png'
+		    });
+		} else {
+			var url = "/geocode?address=" + loc;
+			$.ajax({
+				url: url,
+				dataType: "json",
+				crossDomain: true,
+				success: function (data) {
+					var location = data["results"][0]["geometry"]["location"];
+					newQuery(location["lat"] + "|" + location["lng"], "location-geo", true);
+				}
+			});
+		}
+	}
+}
 
 
 
