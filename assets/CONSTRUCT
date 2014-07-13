@@ -1,0 +1,55 @@
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX uspv:<http://tcdfame.cs.tcd.ie/data/politicalviolence/uspv/>
+PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>
+PREFIX pv:<http://tcdfame.cs.tcd.ie/data/politicalviolence#>
+PREFIX owltime:<http://www.w3.org/2006/time#>
+
+PREFIX lgd:<http://linkedgeodata.org/>
+PREFIX lgdo:<http://linkedgeodata.org/ontology/>
+PREFIX geo:<http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX spatial:<http://jena.apache.org/spatial#>
+
+CONSTRUCT {
+	?url
+		pv:description ?description ;
+		pv:category ?categoryValue ;
+		pv:unstructuredLocation ?locationNode;
+		pv:fatalitiesValue ?fatalitiesValue ;
+		owltime:year ?year .
+	
+		?locationNode
+			pv:unstructuredLocation ?location .
+		?locationNode
+			geo:lat ?lat;
+			geo:long ?long .
+	
+} WHERE {
+	?url
+		pv:description ?description; 
+		pv:category ?categoryValue;
+		pv:motivation ?motivationValue;
+		pv:fatalities ?fatalitiesNode;
+		pv:location ?locationNode;
+		pv:atTime ?timeNode .
+
+	?fatalitiesNode
+		pv:fatalitiesValue ?fatalitiesValue.
+
+	?timeNode
+		owltime:hasDateTimeDescription _:dateTimeDescription .
+
+	_:dateTimeDescription
+		owltime:year ?year
+
+	{
+		?locationNode
+			pv:unstructuredLocation ?location .
+	} UNION {
+		?locationNode
+			pv:unstructuredLocation ?location ;
+			geo:lat ?lat;
+			geo:long ?long .
+	}
+
+}
