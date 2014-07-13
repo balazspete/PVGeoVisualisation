@@ -35,29 +35,40 @@ WHERE {
 		BIND (xsd:string(?fatalitiesValue) AS ?fatalities)
 		BIND (xsd:string(?motivationValue) AS ?motivation)
 		BIND (xsd:string(?categoryValue) AS ?category)
+		BIND (xsd:string(?year) AS ?yearText)
 		BIND (xsd:string(?url) AS ?href)
 		BIND (xsd:string(?lat) AS ?latitude)
 		BIND (xsd:string(?long) AS ?longitude)
 		BIND (xsd:integer(?year) AS ?yearValue)
+		BIND (100 AS ?distance)
 		BIND (xsd:string(100) AS ?distanceText)
 	}
 	
-	FILTER( false{{# category}} || CONTAINS(?category, "{{.}}"){{^}} || true{{/ category}} )
+	{{#if category}}
+		FILTER( false{{#each category}} || CONTAINS(?category, "{{.}}"){{/each}} )
+	{{/if}}
 
-	FILTER( false{{# motivation}} || CONTAINS(?motivation, "{{.}}"){{^}} || true{{/ motivation}} )
+	{{#if motivation}}
+		FILTER( false{{#each motivation}} || CONTAINS(?motivation, "{{.}}"){{/each}} )
+	{{/if}}
 	
-	{{# date.range.min}}FILTER( {{date.range.min}} <= ?yearValue ){{/ date.range.min}}
-	{{# date.range.max}}FILTER( {{date.range.max}} >= ?yearValue ){{/ date.range.max}}
+	{{#if year.range.min}}FILTER( {{year.range.min}} <= ?yearValue ){{/if}}
+	{{#if year.range.max}}FILTER( {{year.range.max}} >= ?yearValue ){{/if}}
+	{{#if year.values}}
+	FILTER( false{{#each year.values}} || {{.}} = ?yearValue{{/each}} )
+	{{/if}}
 
-	FILTER( false{{# date.values}} || {{.}} = ?yearValue{{^}} || true{{/ date.values}} )
+	{{#if fatalities.range.min}}FILTER( {{fatalities.range.min}} <= ?fatalitiesValue ){{/if}}
+	{{#if fatalities.range.max}}FILTER( {{fatalities.range.max}} >= ?fatalitiesValue ){{/if}}
+	{{#if fatalities.values}}
+	FILTER( false{{#each fatalities.values}} || {{.}} = ?fatalitiesValue{{/each}} )
+	{{/if}}
 
-	{{# fatality.range.min}}FILTER( {{fatality.range.min}} <= ?fatalitiesValue ){{/ fatality.range.min}}
-	{{# fatality.range.max}}FILTER( {{fatality.range.max}} >= ?fatalitiesValue ){{/ fatality.range.max}}
+	{{#if locations}}FILTER( false{{#each locations}} || CONTAINS( ?location, "{{.}}" ){{/each}} ){{/if}}
 
-	FILTER( false{{# fatality.values}} || {{.}} = ?fatalitiesValue{{^}} || true{{/ fatality.values}} )
-
-	FILTER( false{{# location}} || CONTAINS( ?location, "{{.}}" ){{^}} || true{{/ location}} )
-
+	{{#if geo.lat}}{{#if geo.long}}{{#if geo.distance}}
+	FILTER( {{geo.lat}} - ?distance <= ?lat && ?lat <= {{geo.lat}} + ?distance )
+	FILTER( {{geo.long}} - ?distance <= ?long && ?long <= {{geo.long}} + ?distance )
+	{{/if}}{{/if}}{{/if}}
 }
-
 LIMIT {{limit}}
